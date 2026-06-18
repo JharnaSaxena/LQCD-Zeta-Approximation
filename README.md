@@ -163,6 +163,3 @@ Contributing
 
 This code was developed as part of a research internship under the supervision of Dr. Joseph Moscoso at the University of Maryland. 
 
----
-
-**Made with ❤️ for Lattice QCD Research**
