@@ -414,4 +414,4 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 ## Contributing
 
-This code was developed as part of a research internship under the supervision of Dr. Joseph Moscoso at the University of Maryland. For questions or suggestions, please contact the repository owner.
+This code was developed as part of a research internship under the supervision of Dr. Joseph Moscoso at the University of Maryland.
