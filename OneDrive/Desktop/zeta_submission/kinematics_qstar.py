@@ -1,5 +1,5 @@
 """
-KINEMATICS USING q* (Joseph's chain)
+KINEMATICS USING q* (Joseph Sir's chain)
 q* → q̃ = q*L/2π → E* → E → γ
 """
 import numpy as np
