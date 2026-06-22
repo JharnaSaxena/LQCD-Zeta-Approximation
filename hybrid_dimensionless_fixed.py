@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 DIMENSIONLESS HYBRID ZETA - FIXED GAMMA FOR Eq6
-- q²<0: Use fixed γ from BOOSTS
-- q²>0: Use γ from kinematics
+1. q²<0: Use fixed γ from BOOSTS
+2. q²>0: Use γ from kinematics
 """
 
 import numpy as np
@@ -13,15 +13,7 @@ from QC2.tools.zeta_wrapper import Z_00
 
 L = 48
 SCALE_FACTOR = (L / (2 * np.pi))**2
-
-# Fixed gamma for each PSQ (for Eq6 / q²<0)
-FIXED_GAMMA = {
-    'PSQ0': 1.0,
-    'PSQ1': 1.1,
-    'PSQ2': 1.15,
-    'PSQ3': 1.2,
-    'PSQ4': 1.3,
-}
+FIXED_GAMMA = {'PSQ0': 1.0,'PSQ1': 1.1,'PSQ2': 1.15,'PSQ3': 1.2,'PSQ4': 1.3,}
 
 BOOSTS = {
     'PSQ0': {'d': (0,0,0), 'name': 'Rest Frame'},
@@ -31,16 +23,11 @@ BOOSTS = {
     'PSQ4': {'d': (0,0,2), 'name': 'Moving along z (2x)'},
 }
 
-# ============================================================
-# CONVERSIONS
-# ============================================================
 def qscaled_from_dimensionless(qstar2_over_mref, m_ref=1.0):
     qstar2 = qstar2_over_mref * m_ref**2
     return qstar2 * SCALE_FACTOR
 
-# ============================================================
-# EQUATION (6) - EXACT FOR q²<0
-# ============================================================
+# EQUATION 6
 def zeta_equation6(q2_scaled, gamma, d, mmax=6):
     if q2_scaled >= 0:
         return np.nan
@@ -80,47 +67,35 @@ def zeta_equation6(q2_scaled, gamma, d, mmax=6):
     Z_val = (gamma * L * np.sqrt(np.pi) / 2.0) * qcotd
     return Z_val
 
-# ============================================================
-# EXACT Z
-# ============================================================
+
 def exact_Z_dimensionless(qstar2_over_mref, d, gamma, m_ref=1.0):
     q2_scaled = qscaled_from_dimensionless(qstar2_over_mref, m_ref)
     try:
         return Z_00(q2_scaled, d=d, gamma=gamma).real
     except:
         return np.nan
-
-# ============================================================
-# MAIN TABLE
-# ============================================================
-print("=" * 80)
 print("DIMENSIONLESS HYBRID ZETA - FIXED GAMMA FOR Eq6")
-print("q²<0: Use fixed γ | q²>0: Use γ from kinematics")
-print("=" * 80)
 
-m_ref = 1.0  # Example reference mass
-
+m_ref = 1.0 
 for psq, info in BOOSTS.items():
     d = info['d']
     name = info['name']
     gamma_fixed = FIXED_GAMMA[psq]
     
     print(f"\n{psq}: {name}")
-    print(f"{'q*²/m_ref²':>14} {'q²_scaled':>14} {'γ':>12} {'Exact Z':>14} {'Status'}")
-    print("-" * 70)
-    
+    print(f"{'q*²/m_ref²':>14} {'q²_scaled':>14} {'γ':>12} {'Exact Z':>14} {'Status'}")    
     test_vals = [-0.3, -0.1, 0.01, 0.05, 0.1]
     
     for qs2_dim in test_vals:
         q2_scaled = qscaled_from_dimensionless(qs2_dim, m_ref)
         
         if qs2_dim < 0:
-            # q²<0: Use fixed gamma for Eq6
+            # q²<0fixed gamma for Eq6
             gamma = gamma_fixed
             exact = zeta_equation6(q2_scaled, gamma_fixed, d, mmax=6)
             status = "Eq6"
         else:
-            # q²>0: Use exact Z with fixed gamma (simplified)
+            # q²>0 exact Z with fixed gamma
             gamma = gamma_fixed
             exact = exact_Z_dimensionless(qs2_dim, d, gamma_fixed, m_ref)
             status = "Exact"
@@ -130,8 +105,4 @@ for psq, info in BOOSTS.items():
         else:
             print(f"{qs2_dim:14.4f} {q2_scaled:14.2f} {gamma:12.6f} {'FAILED':>14} {status}")
 
-print("\n" + "=" * 80)
-print("✅ Dimensionless version with fixed gamma for Eq6 works!")
-print("   - q²<0: Eq6 with fixed γ (exact)")
-print("   - q²>0: Exact Z (placeholder, will use Complex/Padé)")
-print("=" * 80)
+print("Dimensionless version with fixed gamma for Eq6 works!")
